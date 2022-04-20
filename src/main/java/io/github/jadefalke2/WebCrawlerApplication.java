@@ -13,7 +13,7 @@ public class WebCrawlerApplication implements Runnable {
 	@Option(names = {"--depth", "-d"}, description = "The depth to crawl for", defaultValue = "3")
 	private int maxDepth;
 
-	
+
 	private final Crawler crawler;
 
 	public WebCrawlerApplication () {
