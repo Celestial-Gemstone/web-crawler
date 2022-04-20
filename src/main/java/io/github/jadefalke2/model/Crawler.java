@@ -14,32 +14,32 @@ import java.util.stream.Collectors;
 
 public class Crawler {
 
-	private final Executor pooledExecutor;
+	private final Executor threadPool;
 
 	public Crawler () {
-		this.pooledExecutor = Executors.newCachedThreadPool();
+		this.threadPool = Executors.newCachedThreadPool();
 	}
 
-	public Set<String> crawl (String startingURL, int depth) {
+	public Set<String> crawl (String url, int depth) {
 		Set<String> acc = Collections.newSetFromMap(new ConcurrentHashMap<>());
-		crawl(startingURL, acc, depth, 0);
+		crawl(url, acc, depth, 0);
 		return acc;
 	}
 
-	private void crawl (String startingURL, Set<String> accumulator, int maxDepth, int depth) {
-		accumulator.add(startingURL);
+	private void crawl (String url, Set<String> accumulator, int maxDepth, int depth) {
+		accumulator.add(url);
 		if (depth < maxDepth) {
-			getURLs(startingURL)
-				.forEach(url -> pooledExecutor.execute(() -> crawl(url, accumulator, maxDepth, depth + 1)));
+			retrieveURLs(url)
+				.forEach(newUrl -> threadPool.execute(() -> crawl(newUrl, accumulator, maxDepth, depth + 1)));
 		}
 	}
 
-	private Set<String> getURLs (String url) {
+	private Set<String> retrieveURLs (String url) {
 		return requestPage(url)
 			.map(doc -> doc.select("a[href]"))
 			.stream()
 			.map(l -> l.attr("abc:href"))
-			.filter(this::isValid)
+			.filter(this::isValidURL)
 			.collect(Collectors.toSet());
 	}
 
@@ -56,7 +56,7 @@ public class Crawler {
 		}
 	}
 
-	private boolean isValid (String url) {
+	private boolean isValidURL (String url) {
 		return !url.isEmpty();
 	}
 }
