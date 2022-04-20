@@ -16,10 +16,19 @@ public class Crawler {
 
 	private final Executor threadPool;
 
+	/**
+	 * Constructs a new Crawler with a default cached thread pool
+	 */
 	public Crawler () {
 		this.threadPool = Executors.newCachedThreadPool();
 	}
 
+	/**
+	 * Crawl to the given depth from this url
+	 * @param url the url to crawl
+	 * @param depth the max-depth
+	 * @return a set of pages obtained by crawling
+	 */
 	public Set<String> crawl (String url, int depth) {
 		Set<String> acc = Collections.newSetFromMap(new ConcurrentHashMap<>());
 		crawl(url, acc, depth, 0);
