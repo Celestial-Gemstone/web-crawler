@@ -7,7 +7,7 @@ import static picocli.CommandLine.*;
 
 public class WebCrawlerApplication implements Runnable {
 
-	@Parameters(description = "The url to crawl")
+	@Parameters(description = "The url to crawl", required = true)
 	private String url;
 
 	@Option(names = {"--depth", "-d"}, description = "The depth to crawl for", defaultValue = "3")
